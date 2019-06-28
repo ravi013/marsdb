@@ -1,11 +1,12 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Collection = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 exports._resetStartup = _resetStartup;
 exports._warnIfAlreadyStarted = _warnIfAlreadyStarted;
 
@@ -72,7 +73,7 @@ var _startUpId = 0;
 
 // Internals
 function _resetStartup() {
-  var waitMs = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+  var waitMs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
   _startUpId += 1;
   _startUpQueue = [];
@@ -108,11 +109,11 @@ var Collection = exports.Collection = function (_EventEmitter) {
   _inherits(Collection, _EventEmitter);
 
   function Collection(name) {
-    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     _classCallCheck(this, Collection);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Collection).call(this));
+    var _this = _possibleConstructorReturn(this, (Collection.__proto__ || Object.getPrototypeOf(Collection)).call(this));
 
     _this.options = options;
     _this._modelName = name;
@@ -136,6 +137,7 @@ var Collection = exports.Collection = function (_EventEmitter) {
   _createClass(Collection, [{
     key: 'create',
 
+
     /**
      * Factory for creating an object of the model
      * @param  {String|Object} raw
@@ -158,7 +160,7 @@ var Collection = exports.Collection = function (_EventEmitter) {
     value: function insert(doc) {
       var _this2 = this;
 
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       this._lazyInitCollection();
       var randomId = this.idGenerator(this.modelName);
@@ -188,7 +190,7 @@ var Collection = exports.Collection = function (_EventEmitter) {
     value: function insertAll(docs) {
       var _this3 = this;
 
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       return Promise.all((0, _map3.default)(docs, function (d) {
         return _this3.insert(d, options);
@@ -209,7 +211,7 @@ var Collection = exports.Collection = function (_EventEmitter) {
     value: function remove(query) {
       var _this4 = this;
 
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       this._lazyInitCollection();
 
@@ -240,7 +242,7 @@ var Collection = exports.Collection = function (_EventEmitter) {
     value: function update(query, modifier) {
       var _this5 = this;
 
-      var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
       this._lazyInitCollection();
 
@@ -269,7 +271,7 @@ var Collection = exports.Collection = function (_EventEmitter) {
   }, {
     key: 'find',
     value: function find(query) {
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       this._lazyInitCollection();
       return this.delegate.find(query, options);
@@ -287,7 +289,7 @@ var Collection = exports.Collection = function (_EventEmitter) {
   }, {
     key: 'findOne',
     value: function findOne(query) {
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       this._lazyInitCollection();
       return this.delegate.findOne(query, options);
@@ -306,7 +308,7 @@ var Collection = exports.Collection = function (_EventEmitter) {
   }, {
     key: 'count',
     value: function count(query) {
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       this._lazyInitCollection();
       return this.delegate.count(query, options);
@@ -322,7 +324,7 @@ var Collection = exports.Collection = function (_EventEmitter) {
   }, {
     key: 'ids',
     value: function ids(query) {
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       this._lazyInitCollection();
       return this.delegate.ids(query, options);
@@ -337,6 +339,7 @@ var Collection = exports.Collection = function (_EventEmitter) {
   }, {
     key: '_lazyInitCollection',
     value: function _lazyInitCollection() {
+
       if (!this._initialized) {
         this._initialized = true;
         var options = this.options;

@@ -32,15 +32,15 @@ var joinAll = exports.joinAll = {
   },
 
   process: function process(docs, pipeObj, cursor) {
-    var i = arguments.length <= 3 || arguments[3] === undefined ? 0 : arguments[3];
-    var len = arguments.length <= 4 || arguments[4] === undefined ? 1 : arguments[4];
+    var i = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+    var len = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
 
     var updatedFn = cursor._propagateUpdate ? (0, _bind3.default)(cursor._propagateUpdate, cursor) : function () {};
 
     var res = pipeObj.value(docs, updatedFn, i, len);
     res = _checkTypes2.default.array(res) ? res : [res];
     res = (0, _map3.default)(res, function (val) {
-      var cursorPromise = undefined;
+      var cursorPromise = void 0;
       if (val && val.joinAll) {
         // instanceof Cursor
         cursorPromise = val.exec();

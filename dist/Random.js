@@ -1,12 +1,11 @@
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 exports._getBrowserSeeds = _getBrowserSeeds;
 
 var _try2 = require('fast.js/function/try');
@@ -22,7 +21,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // Intarnals
-var _defaultRandomGenerator = undefined;
+var _defaultRandomGenerator = void 0;
 var RANDOM_GENERATOR_TYPE = {
   NODE_CRYPTO: 'NODE_CRYPTO',
   BROWSER_CRYPTO: 'BROWSER_CRYPTO',
@@ -125,7 +124,7 @@ function _getBrowserSeeds() {
 
 var Random = function () {
   function Random(type) {
-    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     _classCallCheck(this, Random);
 
@@ -148,39 +147,33 @@ var Random = function () {
         var numerator = parseInt(this.hexString(8), 16);
         return numerator * 2.3283064365386963e-10; // 2^-32
       } else if (this.type === RANDOM_GENERATOR_TYPE.BROWSER_CRYPTO) {
-          var array = new Uint32Array(1);
-          window.crypto.getRandomValues(array);
-          return array[0] * 2.3283064365386963e-10; // 2^-32
-        } else {
-            throw new Error('Unknown random generator type: ' + this.type);
-          }
+        var array = new Uint32Array(1);
+        window.crypto.getRandomValues(array);
+        return array[0] * 2.3283064365386963e-10; // 2^-32
+      } else {
+        throw new Error('Unknown random generator type: ' + this.type);
+      }
     }
   }, {
     key: 'hexString',
     value: function hexString(digits) {
       if (this.type === RANDOM_GENERATOR_TYPE.NODE_CRYPTO) {
-        var _ret = function () {
-          var nodeCrypto = require('crypto');
-          var numBytes = Math.ceil(digits / 2);
+        var nodeCrypto = require('crypto');
+        var numBytes = Math.ceil(digits / 2);
 
-          // Try to get cryptographically strong randomness. Fall back to
-          // non-cryptographically strong if not available.
-          var bytes = (0, _try3.default)(function () {
-            return nodeCrypto.randomBytes(numBytes);
-          });
-          if (bytes instanceof Error) {
-            bytes = nodeCrypto.pseudoRandomBytes(numBytes);
-          }
+        // Try to get cryptographically strong randomness. Fall back to
+        // non-cryptographically strong if not available.
+        var bytes = (0, _try3.default)(function () {
+          return nodeCrypto.randomBytes(numBytes);
+        });
+        if (bytes instanceof Error) {
+          bytes = nodeCrypto.pseudoRandomBytes(numBytes);
+        }
 
-          var result = bytes.toString('hex');
-          // If the number of digits is odd, we'll have generated an extra 4 bits
-          // of randomness, so we need to trim the last digit.
-          return {
-            v: result.substring(0, digits)
-          };
-        }();
-
-        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+        var result = bytes.toString('hex');
+        // If the number of digits is odd, we'll have generated an extra 4 bits
+        // of randomness, so we need to trim the last digit.
+        return result.substring(0, digits);
       } else {
         return this._randomString(digits, '0123456789abcdef');
       }

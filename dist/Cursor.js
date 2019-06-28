@@ -1,15 +1,15 @@
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Cursor = exports.PIPELINE_PROCESSORS = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _forEach = require('fast.js/forEach');
 
@@ -77,7 +77,7 @@ var BasicCursor = function (_AsyncEventEmitter) {
   function BasicCursor() {
     _classCallCheck(this, BasicCursor);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(BasicCursor).apply(this, arguments));
+    return _possibleConstructorReturn(this, (BasicCursor.__proto__ || Object.getPrototypeOf(BasicCursor)).apply(this, arguments));
   }
 
   return BasicCursor;
@@ -98,12 +98,12 @@ var Cursor = function (_BasicCursor) {
   _inherits(Cursor, _BasicCursor);
 
   function Cursor(db) {
-    var query = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-    var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+    var query = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
     _classCallCheck(this, Cursor);
 
-    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Cursor).call(this));
+    var _this2 = _possibleConstructorReturn(this, (Cursor.__proto__ || Object.getPrototypeOf(Cursor)).call(this));
 
     _this2.db = db;
     _this2.options = options;
@@ -196,7 +196,7 @@ var Cursor = function (_BasicCursor) {
     value: function _processPipeline(docs) {
       var _this4 = this;
 
-      var i = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+      var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
       var pipeObj = this._pipeline[i];
       if (!pipeObj) {
@@ -217,7 +217,7 @@ var Cursor = function (_BasicCursor) {
       var _this5 = this;
 
       return this._matchObjects().then(function (docs) {
-        var clonned = undefined;
+        var clonned = void 0;
         if (_this5.options.noClone) {
           clonned = docs;
         } else {
@@ -290,7 +290,7 @@ var Cursor = function (_BasicCursor) {
     value: function _createCursorPromise(promise) {
       var _this8 = this;
 
-      var mixin = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var mixin = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       return (0, _assign3.default)({
         cursor: this,

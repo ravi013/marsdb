@@ -1,11 +1,11 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DocumentRetriver = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _checkTypes = require('check-types');
 
@@ -55,14 +55,15 @@ var DocumentRetriver = exports.DocumentRetriver = function () {
    * @return {Promise}
    */
 
+
   _createClass(DocumentRetriver, [{
     key: 'retriveForQeury',
     value: function retriveForQeury(query) {
-      var queryFilter = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_QUERY_FILTER : arguments[1];
-      var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+      var queryFilter = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : DEFAULT_QUERY_FILTER;
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
       // Try to get list of ids
-      var selectorIds = undefined;
+      var selectorIds = void 0;
       if ((0, _Document.selectorIsId)(query)) {
         // fast path for scalar query
         selectorIds = [query];
@@ -95,8 +96,8 @@ var DocumentRetriver = exports.DocumentRetriver = function () {
     value: function retriveAll() {
       var _this = this;
 
-      var queryFilter = arguments.length <= 0 || arguments[0] === undefined ? DEFAULT_QUERY_FILTER : arguments[0];
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var queryFilter = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : DEFAULT_QUERY_FILTER;
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       var limit = options.limit || +Infinity;
       var result = [];
@@ -104,25 +105,16 @@ var DocumentRetriver = exports.DocumentRetriver = function () {
 
       return new Promise(function (resolve, reject) {
         var stream = _this.db.storage.createReadStream();
+        stream.then(function (docs) {
 
-        stream.on('data', function (data) {
-          // After deleting of an item some storages
-          // may return an undefined for a few times.
-          // We need to check it there.
-          if (!stopped && data.value) {
-            var doc = _this.db.create(data.value);
+          for (var i = 0; i < docs.length; i++) {
+            var doc = _this.db.create(docs[i]);
             if (result.length < limit && queryFilter(doc)) {
               result.push(doc);
             }
-            // Limit the result if storage supports it
-            if (result.length === limit && stream.pause) {
-              stream.pause();
-              resolve(result);
-              stopped = true;
-            }
           }
-        }).on('end', function () {
-          return !stopped && resolve(result);
+          resolve(result);
+          stopped = true;
         });
       });
     }
@@ -137,12 +129,12 @@ var DocumentRetriver = exports.DocumentRetriver = function () {
   }, {
     key: 'retriveIds',
     value: function retriveIds() {
-      var queryFilter = arguments.length <= 0 || arguments[0] === undefined ? DEFAULT_QUERY_FILTER : arguments[0];
+      var queryFilter = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : DEFAULT_QUERY_FILTER;
 
       var _this2 = this;
 
-      var ids = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
-      var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+      var ids = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
       var uniqIds = (0, _filter3.default)(ids, function (id, i) {
         return ids.indexOf(id) === i;

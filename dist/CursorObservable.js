@@ -1,13 +1,13 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.CursorObservable = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 var _bind2 = require('fast.js/function/bind');
 
@@ -64,18 +64,24 @@ var CursorObservable = function (_Cursor) {
   function CursorObservable(db, query, options) {
     _classCallCheck(this, CursorObservable);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CursorObservable).call(this, db, query, options));
+    var _this = _possibleConstructorReturn(this, (CursorObservable.__proto__ || Object.getPrototypeOf(CursorObservable)).call(this, db, query, options));
 
     _this.maybeUpdate = (0, _bind3.default)(_this.maybeUpdate, _this);
     _this._observers = 0;
     _this._updateQueue = new _PromiseQueue2.default(1);
     _this._propagateUpdate = (0, _debounce2.default)((0, _bind3.default)(_this._propagateUpdate, _this), 0, 0);
     _this._doUpdate = (0, _debounce2.default)((0, _bind3.default)(_this._doUpdate, _this), _defaultDebounce, _defaultBatchSize);
+    // this.then = debounce(
+    //   _bind(this.then, this),
+    //   _defaultDebounce,
+    //   _defaultBatchSize
+    // );
     return _this;
   }
 
   _createClass(CursorObservable, [{
     key: 'batchSize',
+
 
     /**
      * Change a batch size of updater.
@@ -118,7 +124,7 @@ var CursorObservable = function (_Cursor) {
   }, {
     key: 'observe',
     value: function observe(listener) {
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       // Make possible to obbserver w/o callback
       listener = listener || function () {};
@@ -196,8 +202,8 @@ var CursorObservable = function (_Cursor) {
     value: function update() {
       var _this2 = this;
 
-      var firstRun = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
-      var immidiatelly = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+      var firstRun = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      var immidiatelly = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
       if (!immidiatelly) {
         if (this._updateDebPromise && !this._updateDebPromise.debouncePassed) {
@@ -278,11 +284,11 @@ var CursorObservable = function (_Cursor) {
   }, {
     key: '_propagateUpdate',
     value: function _propagateUpdate() {
-      var firstRun = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+      var firstRun = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
       var updatePromise = this.emitAsync('update', this._latestResult, firstRun);
 
-      var parentUpdatePromise = undefined;
+      var parentUpdatePromise = void 0;
       if (!firstRun) {
         parentUpdatePromise = Promise.all((0, _values3.default)((0, _map3.default)(this._parentCursors, function (v, k) {
           if (v._propagateUpdate) {
@@ -309,12 +315,15 @@ var CursorObservable = function (_Cursor) {
     value: function _doUpdate() {
       var _this3 = this;
 
-      var firstRun = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+      var firstRun = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-      if (!firstRun) {
-        this.emit('cursorChanged');
-      }
+      if (!firstRun) {}
+      //  this.emit('cursorChanged');
 
+
+      // return new Promise((res,rej)=>{
+      //   res(this._latestResult);
+      // });
       return this.exec().then(function (result) {
         _this3._updateLatestIds();
         return _this3._propagateUpdate(firstRun).then(function () {
@@ -346,7 +355,7 @@ var CursorObservable = function (_Cursor) {
   }, {
     key: '_trackChildCursorPromise',
     value: function _trackChildCursorPromise(cursorPromise) {
-      _get(Object.getPrototypeOf(CursorObservable.prototype), '_trackChildCursorPromise', this).call(this, cursorPromise);
+      _get(CursorObservable.prototype.__proto__ || Object.getPrototypeOf(CursorObservable.prototype), '_trackChildCursorPromise', this).call(this, cursorPromise);
       if (cursorPromise.stop) {
         this.once('cursorChanged', cursorPromise.stop);
         this.once('observeStopped', cursorPromise.stop);

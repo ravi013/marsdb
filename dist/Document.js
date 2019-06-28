@@ -151,8 +151,7 @@ var MongoTypeComp = exports.MongoTypeComp = {
     100, // JS code
     1, // 32-bit int
     8, // Mongo timestamp
-    1][// 64-bit int
-    t];
+    1][t];
   },
 
   // compare two values of unknown type according to BSON ordering

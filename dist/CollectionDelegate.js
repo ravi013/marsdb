@@ -1,11 +1,11 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.CollectionDelegate = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _map2 = require('fast.js/map');
 
@@ -25,7 +25,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Default collection delegate for working with a
  * normal MarsDB approach – within a browser.
  */
-
 var CollectionDelegate = exports.CollectionDelegate = function () {
   function CollectionDelegate(db) {
     _classCallCheck(this, CollectionDelegate);
@@ -38,7 +37,7 @@ var CollectionDelegate = exports.CollectionDelegate = function () {
     value: function insert(doc) {
       var _this = this;
 
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var randomId = arguments[2];
 
       return this.db.indexManager.indexDocument(doc).then(function () {
@@ -52,10 +51,10 @@ var CollectionDelegate = exports.CollectionDelegate = function () {
     value: function remove(query, _ref) {
       var _this2 = this;
 
-      var _ref$sort = _ref.sort;
-      var sort = _ref$sort === undefined ? { _id: 1 } : _ref$sort;
-      var _ref$multi = _ref.multi;
-      var multi = _ref$multi === undefined ? false : _ref$multi;
+      var _ref$sort = _ref.sort,
+          sort = _ref$sort === undefined ? { _id: 1 } : _ref$sort,
+          _ref$multi = _ref.multi,
+          multi = _ref$multi === undefined ? false : _ref$multi;
 
       return this.find(query, { noClone: true }).sort(sort).then(function (docs) {
         if (docs.length > 1 && !multi) {
@@ -77,12 +76,12 @@ var CollectionDelegate = exports.CollectionDelegate = function () {
     value: function update(query, modifier, _ref2) {
       var _this3 = this;
 
-      var _ref2$sort = _ref2.sort;
-      var sort = _ref2$sort === undefined ? { _id: 1 } : _ref2$sort;
-      var _ref2$multi = _ref2.multi;
-      var multi = _ref2$multi === undefined ? false : _ref2$multi;
-      var _ref2$upsert = _ref2.upsert;
-      var upsert = _ref2$upsert === undefined ? false : _ref2$upsert;
+      var _ref2$sort = _ref2.sort,
+          sort = _ref2$sort === undefined ? { _id: 1 } : _ref2$sort,
+          _ref2$multi = _ref2.multi,
+          multi = _ref2$multi === undefined ? false : _ref2$multi,
+          _ref2$upsert = _ref2.upsert,
+          upsert = _ref2$upsert === undefined ? false : _ref2$upsert;
 
       return this.find(query, { noClone: true }).sort(sort).then(function (docs) {
         if (docs.length > 1 && !multi) {
@@ -90,8 +89,8 @@ var CollectionDelegate = exports.CollectionDelegate = function () {
         }
         return new _DocumentModifier2.default(query).modify(docs, modifier, { upsert: upsert });
       }).then(function (_ref3) {
-        var original = _ref3.original;
-        var updated = _ref3.updated;
+        var original = _ref3.original,
+            updated = _ref3.updated;
 
         var updateStorgePromises = (0, _map3.default)(updated, function (d) {
           return _this3.db.storageManager.persist(d._id, d);
@@ -111,7 +110,7 @@ var CollectionDelegate = exports.CollectionDelegate = function () {
   }, {
     key: 'find',
     value: function find(query) {
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       var cursorClass = this.db.cursorClass;
       return new cursorClass(this.db, query, options);
@@ -119,7 +118,7 @@ var CollectionDelegate = exports.CollectionDelegate = function () {
   }, {
     key: 'findOne',
     value: function findOne(query) {
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       return this.find(query, options).aggregate(function (docs) {
         return docs[0];
@@ -128,7 +127,7 @@ var CollectionDelegate = exports.CollectionDelegate = function () {
   }, {
     key: 'count',
     value: function count(query) {
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       options.noClone = true;
       return this.find(query, options).aggregate(function (docs) {
@@ -138,7 +137,7 @@ var CollectionDelegate = exports.CollectionDelegate = function () {
   }, {
     key: 'ids',
     value: function ids(query) {
-      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       options.noClone = true;
       return this.find(query, options).map(function (doc) {

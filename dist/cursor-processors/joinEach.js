@@ -1,7 +1,5 @@
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -35,17 +33,11 @@ var joinEach = exports.joinEach = {
     if (!docs) {
       return Promise.resolve(docs);
     } else {
-      var _ret = function () {
-        docs = _checkTypes2.default.array(docs) ? docs : [docs];
-        var docsLength = docs.length;
-        return {
-          v: Promise.all((0, _map3.default)(docs, function (x, i) {
-            return _joinAll.joinAll.process(x, pipeObj, cursor, i, docsLength);
-          }))
-        };
-      }();
-
-      if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+      docs = _checkTypes2.default.array(docs) ? docs : [docs];
+      var docsLength = docs.length;
+      return Promise.all((0, _map3.default)(docs, function (x, i) {
+        return _joinAll.joinAll.process(x, pipeObj, cursor, i, docsLength);
+      }));
     }
   }
 };

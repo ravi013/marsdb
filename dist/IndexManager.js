@@ -1,11 +1,11 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.IndexManager = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _bind2 = require('fast.js/function/bind');
 
@@ -50,10 +50,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * By default it creates an index for `_id` field.
  */
 /* istanbul ignore next */
-
 var IndexManager = exports.IndexManager = function () {
   function IndexManager(db) {
-    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     _classCallCheck(this, IndexManager);
 
@@ -81,6 +80,7 @@ var IndexManager = exports.IndexManager = function () {
    * @param  {Object} options.forceRebuild  rebuild index if it exists
    * @return {Promise}
    */
+
 
   _createClass(IndexManager, [{
     key: 'ensureIndex',
@@ -114,9 +114,9 @@ var IndexManager = exports.IndexManager = function () {
       var _this = this;
 
       (0, _invariant2.default)(this.indexes[key], 'Index with key `%s` does not ensured yet', key);
-
+      console.log("buildIndex", key);
       var cleanup = function cleanup() {
-        return _this.indexes[key].buildPromise = null;
+        _this.indexes[key].buildPromise = null;
       };
       var buildPromise = this._queue.add((0, _bind3.default)(this._doBuildIndex, this, key)).then(cleanup, cleanup);
 

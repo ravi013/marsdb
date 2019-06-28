@@ -1,10 +1,10 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _try2 = require('fast.js/function/try');
 
@@ -25,11 +25,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @param {Number} [maxQueuedPromises=Infinity]  max number of queued promises
  * @constructor
  */
-
 var PromiseQueue = function () {
   function PromiseQueue() {
-    var maxPendingPromises = arguments.length <= 0 || arguments[0] === undefined ? Infinity : arguments[0];
-    var maxQueuedPromises = arguments.length <= 1 || arguments[1] === undefined ? Infinity : arguments[1];
+    var maxPendingPromises = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Infinity;
+    var maxQueuedPromises = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Infinity;
 
     _classCallCheck(this, PromiseQueue);
 
@@ -43,6 +42,7 @@ var PromiseQueue = function () {
   /**
    * Pause queue processing
    */
+
 
   _createClass(PromiseQueue, [{
     key: 'pause',
@@ -71,7 +71,7 @@ var PromiseQueue = function () {
     value: function add(promiseGenerator) {
       var _this = this;
 
-      var unshift = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+      var unshift = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
       return new Promise(function (resolve, reject) {
         if (_this.length >= _this.maxQueuedPromises) {

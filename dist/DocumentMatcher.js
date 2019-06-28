@@ -1,13 +1,14 @@
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ELEMENT_OPERATORS = exports.DocumentMatcher = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 exports.regexpElementMatcher = regexpElementMatcher;
 exports.equalityElementMatcher = equalityElementMatcher;
 exports.makeLookupFunction = makeLookupFunction;
@@ -75,7 +76,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // Main entry point.
 //   var matcher = new Minimongo.Matcher({a: {$gt: 5}});
 //   if (matcher.documentMatches({a: 7})) ...
-
 var DocumentMatcher = exports.DocumentMatcher = function () {
   function DocumentMatcher(selector) {
     _classCallCheck(this, DocumentMatcher);
@@ -113,6 +113,7 @@ var DocumentMatcher = exports.DocumentMatcher = function () {
     }
   }, {
     key: '_compileSelector',
+
 
     // Given a selector, return a function that takes one argument, a
     // document. It returns a result object.
@@ -197,7 +198,7 @@ exports.default = DocumentMatcher;
 // then isRoot is true. (This is used by $near.)
 
 var compileDocumentSelector = function compileDocumentSelector(docSelector, matcher) {
-  var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
   var docMatchers = [];
   (0, _forEach2.default)(docSelector, function (subSelector, key) {
@@ -247,7 +248,7 @@ var compileValueSelector = function compileValueSelector(valueSelector, matcher,
 // value (which evaluates the element matcher on all the branches and returns a
 // more structured return value possibly including arrayIndices).
 var convertElementMatcherToBranchedMatcher = function convertElementMatcherToBranchedMatcher(elementMatcher) {
-  var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   return function (branches) {
     var expanded = branches;

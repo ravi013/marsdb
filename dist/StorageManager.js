@@ -1,11 +1,11 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.StorageManager = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _keys2 = require('fast.js/object/keys');
 
@@ -23,6 +23,8 @@ var _EJSON = require('./EJSON');
 
 var _EJSON2 = _interopRequireDefault(_EJSON);
 
+var _rxjs = require('rxjs');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -33,10 +35,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * memory. You can implement the same interface
  * and use another storage (with levelup, for example)
  */
-
 var StorageManager = exports.StorageManager = function () {
   function StorageManager(db) {
-    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     _classCallCheck(this, StorageManager);
 
@@ -107,27 +108,24 @@ var StorageManager = exports.StorageManager = function () {
     value: function createReadStream() {
       var _this6 = this;
 
-      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-      // Very limited subset of ReadableStream
+      console.log("createReadStream", this.db._modelName);
       var paused = false;
-      var emitter = new _eventemitter2.default();
-      emitter.pause = function () {
-        return paused = true;
-      };
+      return new Promise(function (resolve, reject) {
+        _this6.loaded().then(function () {
+          var keys = (0, _keys3.default)(_this6._storage);
+          var results = [];
+          for (var i = 0; i < keys.length; i++) {
+            results.push(_this6._storage[keys[i]]);
 
-      this.loaded().then(function () {
-        var keys = (0, _keys3.default)(_this6._storage);
-        for (var i = 0; i < keys.length; i++) {
-          emitter.emit('data', { value: _this6._storage[keys[i]] });
-          if (paused) {
-            return;
+            if (paused) {
+              return;
+            }
           }
-        }
-        emitter.emit('end');
+          resolve(results);
+        });
       });
-
-      return emitter;
     }
   }, {
     key: '_loadStorage',

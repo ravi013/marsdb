@@ -7,6 +7,7 @@ var Random = require('./dist/Random').default;
 var EJSON = require('./dist/EJSON').default;
 var Base64 = require('./dist/Base64').default;
 var PromiseQueue = require('./dist/PromiseQueue').default;
+var LocalForageManager = require('./dist/LocalForageManager').default;
 
 
 module.exports = {
@@ -20,5 +21,6 @@ module.exports = {
   StorageManager: StorageManager,
   EventEmitter: EventEmitter,
   PromiseQueue: PromiseQueue,
+  LocalForageManager:LocalForageManager,
   debounce: debounce
 };
